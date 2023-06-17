@@ -1,0 +1,10 @@
+:root {
+  --el-color-primary: #7A00E6;
+  --el-color-primary-light-5: #7A00E6;
+  --el-color-primary-light-9: #fff;
+  --el-color-primary-light-3: #7A00E6;
+
+  --el-fill-color-light: #F4F2F6;
+  --el-border-color-light: #F4F2F6;
+  --el-disabled-text-color: #000;
+}

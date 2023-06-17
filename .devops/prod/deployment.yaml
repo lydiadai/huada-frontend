@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: hr-offer-tool-pc-prod-deployment
+    qcloud-app: hr-offer-tool-pc-prod-deployment
+  name: hr-offer-tool-pc-prod-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hr-offer-tool-pc-prod-deployment
+      qcloud-app: hr-offer-tool-pc-prod-deployment
+  template:
+    metadata:
+      labels:
+        k8s-app: hr-offer-tool-pc-prod-deployment
+        qcloud-app: hr-offer-tool-pc-prod-deployment
+    spec:
+      containers:
+      - env:
+        - name: PATH
+          value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - name: NGINX_VERSION
+          value: 1.22.0
+        - name: NJS_VERSION
+          value: 0.7.4
+        - name: PKG_RELEASE
+          value: "1"
+        image: tcr-hroneportal-prod.tencentcloudcr.com/smart_employee.hrportal/offer-tool-pc:latest
+        imagePullPolicy: Always
+        name: hr-offer-tool-pc-prod-container
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: tcr.ipstcr-2daa6cuv-public
+      restartPolicy: Always

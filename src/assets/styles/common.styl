@@ -1,0 +1,77 @@
+@import "./function.styl"
+@import "./variable.styl"
+
+img
+  width 100%
+  height 100%
+  border-radius inherit
+
+.button
+  color $color-primary
+  border-color $color-primary
+
+  &-primary
+    color $color-white
+    background-color $color-primary
+
+  &-primary.is-disabled
+    color $color-g5
+    background-color $color-g2
+    border 1px solid $color-g3
+
+.flex
+  display flex
+
+.flex-row
+  @extend .flex
+  flex-direction row
+
+.flex-col
+  @extend .flex
+  flex-direction col
+
+.flex-auto
+  flex auto
+
+.flex-none
+  flex none
+
+.cursor-pointer
+  cursor pointer
+
+.cursor-not-allowed
+  cursor not-allowed
+
+.form-pop
+  max-width 300px
+
+.el-dialog
+  .el-dialog__headerbtn
+    top: 3px
+    font-size: 20px
+    font-weight: bold
+  .el-dialog__header
+    border-bottom: 1px solid #F0F0F0;
+    margin-right: 0
+    padding: 16px 24px
+    .el-dialog__title
+      color: rgba(0, 0, 0, 0.85)
+      font-weight: 500
+      font-size: 16px
+      line-height: 24px
+  .el-dialog__footer
+    border-top: 1px solid #F0F0F0;
+    padding: 10px 16px
+
+.el-form-item__label
+  color: #000
+
+.el-input__inner
+  text-overflow ellipsis
+
+.el-alert
+  word-break break-word
+
+.container {
+  padding 1rem
+}

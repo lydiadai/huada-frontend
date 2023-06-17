@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: hr-offer-tool-pc-prod-service
+    qcloud-app: hr-offer-tool-pc-prod-service
+  name: hr-offer-tool-pc-prod-service
+  namespace: default
+spec:
+  clusterIP: 192.168.1.55
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: 80-80-tcp
+    nodePort: 30080
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    k8s-app: hr-offer-tool-pc-prod-service
+    qcloud-app: hr-offer-tool-pc-prod-service
+  sessionAffinity: None
+  type: NodePort

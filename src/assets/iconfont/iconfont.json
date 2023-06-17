@@ -1,0 +1,16 @@
+{
+  "id": "4126800",
+  "name": "Hackson",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "24347450",
+      "name": "openai",
+      "font_class": "openai",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    }
+  ]
+}
