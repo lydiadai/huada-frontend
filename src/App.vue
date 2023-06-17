@@ -5,6 +5,10 @@ import AiBot from '@comp/ai-bot.vue'
 
 const showChat = ref(false)
 provide('showChat', showChat)
+const chatHandler = ref()
+
+const aiBot = ref()
+provide('pushBotMessage', aiBot?.value?.pushMessage)
 </script>
 
 <template>
@@ -13,7 +17,7 @@ provide('showChat', showChat)
     <div class="router-view-container">
       <RouterView></RouterView>
     </div>
-    <AiBot :show="showChat"></AiBot>
+    <AiBot ref="aiBot" :show="showChat" :chat-handler="chatHandler"></AiBot>
   </div>
 </template>
 

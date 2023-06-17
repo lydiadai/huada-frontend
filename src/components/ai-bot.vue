@@ -10,6 +10,10 @@ const props = defineProps({
     type: Boolean,
     default: () => false,
   },
+  chatHandler: {
+    type: Function,
+    default: () => {},
+  },
 })
 
 const boxWidth = ref(400)
@@ -59,6 +63,11 @@ const showBotHandler = () => {
 const closeBotHandler = () => {
   showChat.value = false
 }
+
+const chatBox = ref()
+defineExpose({
+  pushMessage: chatBox?.value?.pushMessage,
+})
 </script>
 
 <template>
@@ -66,12 +75,12 @@ const closeBotHandler = () => {
     class="bot-container"
     :style="{ width: boxWidthStyle, transition: transitionStr }"
   >
-    <ChatBox></ChatBox>
+    <ChatBox ref="chatBox" :ask-fn="chatHandler"></ChatBox>
     <div class="close" @click="closeBotHandler">></div>
     <div class="resize-bar" @mousedown="resizeStartHandler"></div>
   </div>
   <div
-    v-if="!showChat && !route.fullPath.endsWith('doi')"
+    v-if="!showChat && !route.path.endsWith('doi') && !route.path.endsWith('preview')"
     class="bot iconfont icon-openai"
     @click="showBotHandler"
   ></div>

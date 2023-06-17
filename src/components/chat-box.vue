@@ -83,6 +83,10 @@ onMounted(() => {
     initHeight.value = inputRow.value.clientHeight
   }, 200)
 })
+
+defineExpose({
+  pushMessage,
+})
 </script>
 
 <template>

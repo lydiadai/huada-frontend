@@ -49,6 +49,11 @@ export default ({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/\/web/, ''),
         },
+        '/api': {
+          target: 'http://4.155.25.158:5000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/\/api/, ''),
+        }
       },
     },
     build: {

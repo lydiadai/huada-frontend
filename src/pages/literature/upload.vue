@@ -1,7 +1,8 @@
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, unref, watch } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { BlobServiceClient } from '@azure/storage-blob'
+import axios from '@/http/axios.js'
 
 const currentStep = ref(0)
 
@@ -10,6 +11,7 @@ const beforeUploadHandler = (file) => {
 }
 
 const uploading = ref(false)
+const fileUrl = ref('')
 const uploadFileHandler = async ({ file }) => {
   uploading.value = true
   const containerName = `gptfiles`
@@ -29,37 +31,24 @@ const uploadFileHandler = async ({ file }) => {
 
   // upload file
   await blobClient.uploadData(file, options)
+  fileUrl.value = `https://cggptsc.blob.core.windows.net/gptfiles/${file.name}`
 
   currentStep.value = currentStep.value + 1
 }
 
 const fileInfo = reactive({
-  file_name: '',
+  title: '',
   author: '',
   doi: '',
 })
 
 const submitFileInfoHandler = async () => {
-  currentStep.value = currentStep.value + 1
+  const data = unref(fileInfo)
+  data.url = fileUrl.value
+  data.user_id = '123'
+  axios.defaults.baseURL = '/api'
+  const res = await axios.post('/addDocument', data)
 }
-
-const progress = ref(0)
-const updateProgress = () => {
-  const delta = Math.random() * 5
-  progress.value = Math.round(progress.value + delta)
-
-  if (progress.value > 100) {
-    progress.value = 100
-    return
-  }
-
-  setTimeout(updateProgress, Math.random() * 800 + 200)
-}
-watch(currentStep, (currentStep) => {
-  if (currentStep !== 2) return
-
-  updateProgress()
-})
 </script>
 
 <template>
@@ -68,8 +57,6 @@ watch(currentStep, (currentStep) => {
       <ElSteps :active="currentStep" align-center>
         <ElStep title="上传文件" />
         <ElStep title="文件基础信息" />
-        <ElStep title="开始总结" />
-        <ElStep title="总结结果"></ElStep>
       </ElSteps>
     </div>
 
@@ -101,25 +88,16 @@ watch(currentStep, (currentStep) => {
       <template v-if="currentStep === 1">
         <ElForm>
           <ElFormItem label="题目">
-            <ElInput v-model="fileInfo.file_name"></ElInput>
+            <ElInput v-model="fileInfo.title"></ElInput>
           </ElFormItem>
           <ElFormItem label="作者">
             <ElInput v-model="fileInfo.author"></ElInput>
           </ElFormItem>
-          <ElFormItem label="类别">
+          <ElFormItem label="DOI">
             <ElInput v-model="fileInfo.doi"></ElInput>
           </ElFormItem>
           <ElButton @click="submitFileInfoHandler">提交</ElButton>
         </ElForm>
-      </template>
-
-      <template v-if="currentStep === 2">
-        <ElProgress
-          class="progress"
-          text-inside
-          :stroke-width="40"
-          :percentage="progress"
-        ></ElProgress>
       </template>
     </div>
   </div>

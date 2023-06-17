@@ -1,23 +1,37 @@
 <script setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, unref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from '@/http/axios.js'
 
+const router = useRouter()
 const showChat = inject('showChat')
 
 const query = reactive({
   title: '',
   author: '',
   abstract: '',
-  timeRange: [],
 })
 
-const literatureList = ref([
-  {
-    title: 'Title Title Title Title Title Title Title Title Title ',
-    author: 'Super Guo',
-    abstract:
-      'abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract ',
-  },
-])
+const literatureList = ref([])
+
+const searchDocuments = async () => {
+  axios.defaults.baseURL = '/api'
+  const res = await axios.post('/searchDocument', unref(query))
+  console.log('query res is : ', res)
+  literatureList.value = res
+}
+
+const searchHandler = async () => {
+  await searchDocuments()
+}
+
+onMounted(async () => {
+  await searchDocuments()
+})
+
+const viewPdfHandler = (literature) => {
+  router.push(`/literature/preview?url=${encodeURIComponent(literature.url)}&doi=${encodeURIComponent(literature.doi)}`)
+}
 </script>
 
 <template>
@@ -38,25 +52,19 @@ const literatureList = ref([
         <ElFormItem class="input" label="文献来源：">
           <ElInput v-model="query.source"></ElInput>
         </ElFormItem>
-        <ElFormItem class="input" label="时间范围：">
-          <ElDatePicker
-            v-model="query.timeRange"
-            clearable
-            type="daterange"
-          ></ElDatePicker>
-        </ElFormItem>
-        <ElButton round class="query-button">搜索</ElButton>
+        <ElButton round class="query-button" @click="searchHandler">搜索</ElButton>
       </ElForm>
     </div>
     <div class="literature-list container">
       <div
-        class="literature container"
-        v-for="(literature, index) in literatureList"
-        :key="index"
+        class="literature container cursor-pointer"
+        v-for="literature in literatureList"
+        :key="literature.id"
+        @click="viewPdfHandler(literature)"
       >
         <div class="title">{{ literature.title }}</div>
         <div class="author">作者：{{ literature.author }}</div>
-        <div class="abstract">摘要：{{ literature.abstract }}</div>
+        <div class="abstract">DOI：{{ literature.doi }}</div>
       </div>
     </div>
   </div>
