@@ -44,14 +44,6 @@ defineProps({
     margin-top 2rem
   }
 
-  &.align-right {
-    setFlex(row, flex-end, flex-start)
-
-    .content-container {
-      setFlex(column, flex-start, flex-end)
-    }
-  }
-
   .iconfont.icon-openai {
     setFlex(row, center, flex-start)
 
@@ -69,7 +61,22 @@ defineProps({
     border-radius: 8px
     width fit-content
 
-    background-color $color-primary
+    background-color #eaecef
+    color #000000
+  }
+
+
+  &.align-right {
+    setFlex(row, flex-end, flex-start)
+
+    .content-container {
+      setFlex(column, flex-start, flex-end)
+    }
+
+    .content {
+      background-color rgb(91, 200, 236)
+      color #ffffff
+    }
   }
 }
 </style>

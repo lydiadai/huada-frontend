@@ -15,8 +15,7 @@ const query = reactive({
 const literatureList = ref([])
 
 const searchDocuments = async () => {
-  axios.defaults.baseURL = '/api'
-  const res = await axios.post('/searchDocument', unref(query))
+  const res = await axios.post('/api/searchDocument', unref(query))
   console.log('query res is : ', res)
   literatureList.value = res
 }

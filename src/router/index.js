@@ -1,11 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import errorRoutes from './routes/errorRoutes.js'
 
 const routes = [
   {
     path: '/',
     name: 'Default',
-    redirect: '/home',
+    redirect: '/literature',
   },
   {
     path: '/login',
@@ -43,18 +42,7 @@ const routes = [
     name: '查阅文档',
     component: () => import('@pages/literature/view-pdf.vue'),
   },
-
-  // Notice, Keep error routes at the end of routes array
-  ...errorRoutes,
 ]
-
-if (import.meta.env.MODE === 'development') {
-  routes.splice(1, 0, {
-    path: '/test-login',
-    name: 'TestLogin',
-    component: () => import('@pages/test/test-login.vue'),
-  })
-}
 
 const router = createRouter({
   history: createWebHashHistory(),

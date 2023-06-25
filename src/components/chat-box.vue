@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, watch, onMounted, computed, nextTick } from 'vue'
 import { resizeMouseDownEventHandler } from '@assets/utils/resize.js'
 import Message from '@comp/chat-box-message.vue'
 
@@ -29,15 +29,19 @@ const messageList = ref([
 const inputValue = ref('')
 
 const sendHandler = async () => {
+  thinking.value = true
   const value = inputValue.value
   inputValue.value = ''
+
   pushMessage({
     type: 'user',
     content: value,
     time: new Date(),
   })
+
   const answer = await props.askFn(value)
   pushMessage(answer)
+  thinking.value = false
 }
 
 const messageContainer = ref()
@@ -84,8 +88,27 @@ onMounted(() => {
   }, 200)
 })
 
+const thinking = ref(false)
+const thinkingDots = ref(['.'])
+const dotsInterval = ref()
+watch(thinking, (isThinking) => {
+  if (isThinking && !dotsInterval.value) {
+    dotsInterval.value = setInterval(() => {
+      if (thinkingDots.value.length + 1 > 3) {
+        thinkingDots.value = ['.']
+      } else {
+        thinkingDots.value.push('.')
+      }
+    }, 500)
+  } else if (!isThinking) {
+    clearInterval(dotsInterval)
+    thinkingDots.value = ['.']
+  }
+})
+
 defineExpose({
   pushMessage,
+  thinking,
 })
 </script>
 
@@ -99,6 +122,14 @@ defineExpose({
       <template v-for="message in messageList" :key="message.time">
         <Message :message="message" />
       </template>
+      <div v-if="thinking" class="thinking">
+        I'm thinking
+        <div
+          v-for="(dot, index) in thinkingDots"
+          :key="index"
+          class="dot"
+        ></div>
+      </div>
     </div>
     <div
       class="input-row"
@@ -126,6 +157,8 @@ defineExpose({
 
   width 100%
   height 100%
+
+  background-color $color-white
 
   overflow hidden
 
@@ -160,5 +193,21 @@ defineExpose({
       }
     }
   }
+}
+
+.thinking {
+  setFlex(row, flex-start, flex-end)
+  color $color-g7
+  margin-top 1rem
+}
+
+.dot {
+  width 5px
+  height 5px
+  border-radius 50%
+  background-color currentColor
+  opacity 0.9
+  margin-left 4px
+  margin-bottom 2px
 }
 </style>

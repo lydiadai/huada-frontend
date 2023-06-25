@@ -6,11 +6,6 @@ const axios = Axios.create({
   withCredentials: true,
 })
 
-axios.defaults.baseURL =
-  import.meta.env.MODE === 'development'
-    ? '/web'
-    : import.meta.env.VITE_API_BASE
-
 axios.interceptors.response.use(responseInterceptor, errorInterceptor)
 
 export default axios

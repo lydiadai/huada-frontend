@@ -12,6 +12,7 @@ const beforeUploadHandler = (file) => {
 
 const uploading = ref(false)
 const fileUrl = ref('')
+const fileName = ref('')
 const uploadFileHandler = async ({ file }) => {
   uploading.value = true
   const containerName = `gptfiles`
@@ -23,15 +24,23 @@ const uploadFileHandler = async ({ file }) => {
   const blobService = new BlobServiceClient(uploadUrl)
   const containerClient = blobService.getContainerClient(containerName)
 
+  console.log('upload file is : ', file)
+  const name = file.name.toString().split('.')
+  name[0] = `${name[0]}-${Date.now()}`
+  fileName.value = name.join('.')
+  const f = {
+    ...file,
+    name: fileName.value,
+  }
   // create blobClient for container
-  const blobClient = containerClient.getBlockBlobClient(file.name)
+  const blobClient = containerClient.getBlockBlobClient(f.name)
 
   // set mimetype as determined from browser with file upload control
-  const options = { blobHTTPHeaders: { blobContentType: file.type } }
+  const options = { blobHTTPHeaders: { blobContentType: f.type } }
 
   // upload file
-  await blobClient.uploadData(file, options)
-  fileUrl.value = `https://cggptsc.blob.core.windows.net/gptfiles/${file.name}`
+  await blobClient.uploadData(f, options)
+  fileUrl.value = `https://cggptsc.blob.core.windows.net/gptfiles/${f.name}`
 
   currentStep.value = currentStep.value + 1
 }
@@ -40,14 +49,16 @@ const fileInfo = reactive({
   title: '',
   author: '',
   doi: '',
+  file_name: '',
 })
 
 const submitFileInfoHandler = async () => {
   const data = unref(fileInfo)
-  data.url = fileUrl.value
+  data.url = encodeURIComponent(fileUrl.value)
   data.user_id = '123'
-  axios.defaults.baseURL = '/api'
-  const res = await axios.post('/addDocument', data)
+  data.file_name = fileName.value
+  const res = await axios.post('/web/file/upload', data)
+  console.log('add Document res is : ', res)
 }
 </script>
 

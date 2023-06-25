@@ -2,7 +2,7 @@
 
 <template>
   <div class="top-bar">
-    <div class="system-name">华大GBI</div>
+    <div class="system-name">华大BGI</div>
     <ElMenu class="menu" mode="horizontal" :ellipsis="false" router>
       <ElMenuItem index="/literature">科研资源库</ElMenuItem>
       <ElMenuItem index="/literature/upload">文献上传</ElMenuItem>
